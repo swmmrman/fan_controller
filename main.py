@@ -5,11 +5,34 @@ import ntptime
 import network
 import urequests
 import wifi
+import socket
 import _thread
 
 
 relay_pin = 14
 tzoffset = -21600
+sensor_1 = dht.DHT22(machine.Pin(0, machine.Pin.IN))
+sensor_2 = dht.DHT11(machine.Pin(1, machine.Pin.IN))
+
+def temp_loop():
+    while True:
+        time.sleep(2)
+        sensor_1.measure()
+        temp_1 = sensor_1.temperature() * 1.8 + 32
+        sensor_2.measure()
+        temp_2 = sensor_2.temperature() * 1.8 + 32
+        print(f"\rTemp 1: {temp_1: 4.2f}f\tTemp 2: {temp_2: 4.2f}f", end="")
+
+
+def watcher():
+    while True:
+        resp = urequests.get('http://192.168.1.134/fan_call.txt')
+        if int(resp.text):
+            relay.on()
+        else:
+            relay.off()
+        time.sleep(5)
+
 
 wlan = network.WLAN(network.STA_IF)
 wlan.active(True)
@@ -50,28 +73,5 @@ relay.on()
 time.sleep(5)
 relay.off()
 
-def watcher():
-    while True:
-        resp = urequests.get('http://192.168.1.134/fan_call.txt')
-        if int(resp.text):
-            relay.on()
-        else:
-            relay.off()
-        time.sleep(5)
-
-
 _thread.start_new_thread(watcher, ())
-
-sensor_1 = dht.DHT22(machine.Pin(0, machine.Pin.IN))
-sensor_2 = dht.DHT11(machine.Pin(1, machine.Pin.IN))
-
-def temp_loop():
-    while True:
-        time.sleep(2)
-        sensor_1.measure()
-        temp_1 = sensor_1.temperature() * 1.8 + 32
-        sensor_2.measure()
-        temp_2 = sensor_2.temperature() * 1.8 + 32
-        print(f"\rTemp 1: {temp_1: 4.2f}f\tTemp 2: {temp_2: 4.2f}f", end="")
-
 temp_loop()
