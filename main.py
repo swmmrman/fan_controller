@@ -36,7 +36,7 @@ while time_not_set:
         print(f"\rFails: {fails}", end="")
         time.sleep(1)
         continue
-    finally:
+    else:
         time_not_set = False
 
 
