@@ -1,3 +1,4 @@
+import dht
 import machine
 import time
 import ntptime
@@ -60,3 +61,11 @@ def watcher():
 
 
 _thread.start_new_thread(watcher, ())
+
+sensor = dht.DHT22(machine.Pin(0, machine.Pin.IN))
+
+while True:
+    sensor.measure()
+    temp = sensor.temperature() * 1.8 + 32
+    print(f"\rTemp: {temp: 4.2f}f", end="")
+    time.sleep(2)
