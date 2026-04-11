@@ -11,6 +11,8 @@ import _thread
 
 relay_pin = 14
 tzoffset = -21600
+
+relay = machine.Pin(relay_pin, machine.Pin.OUT)
 sensor_1 = dht.DHT22(machine.Pin(0, machine.Pin.IN))
 sensor_2 = dht.DHT11(machine.Pin(1, machine.Pin.IN))
 
@@ -24,8 +26,7 @@ def temp_loop():
         print(f"\rTemp 1: {temp_1: 4.2f}f\tTemp 2: {temp_2: 4.2f}f", end="")
 
 
-def test_relay():
-    relay = machine.Pin(relay_pin, machine.Pin.OUT)
+def test_relay(relay):
     relay.on()
     time.sleep(5)
     relay.off()
@@ -45,7 +46,7 @@ wlan = network.WLAN(network.STA_IF)
 wlan.active(True)
 wlan.connect(wifi.ssid, wifi.password)
 
-test_relay()
+test_relay(relay)
 
 times_nc = 0
 while wlan.status() != 3:
