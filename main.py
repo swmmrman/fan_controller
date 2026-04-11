@@ -62,10 +62,13 @@ def watcher():
 
 _thread.start_new_thread(watcher, ())
 
-sensor = dht.DHT22(machine.Pin(0, machine.Pin.IN))
+sensor_1 = dht.DHT22(machine.Pin(0, machine.Pin.IN))
+sensor_2 = dht.DHT11(machine.Pin(1, machine.Pin.IN))
 
 while True:
-    sensor.measure()
-    temp = sensor.temperature() * 1.8 + 32
-    print(f"\rTemp: {temp: 4.2f}f", end="")
     time.sleep(2)
+    sensor_1.measure()
+    temp_1 = sensor_1.temperature() * 1.8 + 32
+    sensor_2.measure()
+    temp_2 = sensor_2.temperature() * 1.8 + 32
+    print(f"\rTemp 1: {temp_1: 4.2f}f\tTemp 2: {temp_2: 4.2f}f", end="")
