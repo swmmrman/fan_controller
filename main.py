@@ -24,13 +24,13 @@ else:
 
 time_not_set = True
 fails = 0
-print()
+
 while time_not_set:
     try:
         ntptime.settime()
     except OSError:
         fails = fails + 1
-        print(f"\rFails: {fails}")
+        print(f"\rFails: {fails}", end="")
         time.sleep(1)
         continue
     finally:
