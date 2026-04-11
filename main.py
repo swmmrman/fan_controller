@@ -41,7 +41,7 @@ while time_not_set:
 
 
 tt = time.localtime(time.time() + tzoffset)
-ts = f"[{tt[0]}-{tt[1]:02}-{tt[2]} {tt[3]}:{tt[4]}:{tt[5]}]"
+ts = f"[{tt[0]}-{tt[1]:02}-{tt[2]} {tt[3]:02}:{tt[4]:02}:{tt[5]:02}]"
 print(f"\r\n{ts} Wifi connected: {wlan.ifconfig()[0]}")
 
 
