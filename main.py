@@ -26,7 +26,10 @@ relay.off()
 
 
 while True:
-    resp = urequests.get('http://192.168.1.134/temp_in.txt')
-    print(f"\r{resp.text}", end="")
-    time.sleep(1)
+    resp = urequests.get('http://192.168.1.134/fan_call.txt')
+    if int(resp.text):
+        relay.on()
+    else:
+        relay.off()
+    time.sleep(5)
  
