@@ -1,10 +1,12 @@
 import machine
 import time
+import ntptime
 import network
 import urequests
 import wifi
 
 relay_pin = 14
+tzoffset = -21600
 
 wlan = network.WLAN(network.STA_IF)
 wlan.active(True)
@@ -17,7 +19,11 @@ while wlan.status() != 3:
     time.sleep(1)
     time_nc = time_nc + 1
 
-print(f"\r\nWifi connected: {wlan.ifconfig()}")
+ntptime.settime()
+tt = time.localtime(time.time() + tzoffset)
+ts = f"{tt[0]}/{tt[1]}\{tt[2]} {tt[3]}:{tt[4]}:{tt[5]}"
+print(f"\r\n{ts}Wifi connected: {wlan.ifconfig()}")
+
 
 relay = machine.Pin(relay_pin, machine.Pin.OUT)
 relay.on()
