@@ -18,11 +18,28 @@ while wlan.status() != 3:
     print(f"\rNo wifi, {time_nc} seconds", end="")
     time.sleep(1)
     time_nc = time_nc + 1
+else:
+    print()
 
-ntptime.settime()
+
+time_not_set = True
+fails = 0
+print()
+while time_not_set:
+    try:
+        ntptime.settime()
+    except OSError:
+        fails = fails + 1
+        print(f"\rFails: {fails}")
+        time.sleep(1)
+        continue
+    finally:
+        time_not_set = False
+
+
 tt = time.localtime(time.time() + tzoffset)
-ts = f"{tt[0]}/{tt[1]}\{tt[2]} {tt[3]}:{tt[4]}:{tt[5]}"
-print(f"\r\n{ts}Wifi connected: {wlan.ifconfig()}")
+ts = f"[{tt[0]}-{tt[1]:02}-{tt[2]} {tt[3]}:{tt[4]}:{tt[5]}]"
+print(f"\r\n{ts} Wifi connected: {wlan.ifconfig()[0]}")
 
 
 relay = machine.Pin(relay_pin, machine.Pin.OUT)
