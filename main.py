@@ -39,7 +39,7 @@ wlan.active(True)
 wlan.connect(wifi.ssid, wifi.password)
 
 
-time_nc = 0
+times_nc = 0
 while wlan.status() != 3:
     print(f"\rNo wifi, {time_nc} seconds", end="")
     time.sleep(1)
