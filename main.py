@@ -4,17 +4,19 @@ import time
 import ntptime
 import network
 import urequests
-import wifi
 import socket
 import _thread
 
-
+## Setup global variables
 relay_pin = 14
 tzoffset = -21600
 
+#Setup sensors/relays/wifi
 relay = machine.Pin(relay_pin, machine.Pin.OUT)
 sensor_1 = dht.DHT22(machine.Pin(0, machine.Pin.IN))
 sensor_2 = dht.DHT11(machine.Pin(1, machine.Pin.IN))
+wlan = network.WLAN(network.STA_IF)
+wlan.active(True)
 
 
 def sync_time():
@@ -59,20 +61,21 @@ def watcher():
         time.sleep(5)
 
 
-wlan = network.WLAN(network.STA_IF)
-wlan.active(True)
-wlan.connect(wifi.ssid, wifi.password)
+def connect_wifi(wlan):
+    import wifi
+    #Connect wifi to network.
+    wlan.connect(wifi.ssid, wifi.password)
+    times_nc = 0
+    while wlan.status() != 3:
+        print(f"\rNo wifi, {times_nc} seconds", end="")
+        time.sleep(1)
+        times_nc = times_nc + 1
+    else:
+        print()
+
 
 test_relay(relay)
-
-times_nc = 0
-while wlan.status() != 3:
-    print(f"\rNo wifi, {time_nc} seconds", end="")
-    time.sleep(1)
-    time_nc = time_nc + 1
-else:
-    print()
-
+connect_wifi(wlan)
 sync_time()
 tt = time.localtime(time.time() + tzoffset)
 ts = f"[{tt[0]}-{tt[1]:02}-{tt[2]} {tt[3]:02}:{tt[4]:02}:{tt[5]:02}]"
