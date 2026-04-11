@@ -4,6 +4,8 @@ import ntptime
 import network
 import urequests
 import wifi
+import _thread
+
 
 relay_pin = 14
 tzoffset = -21600
@@ -47,12 +49,14 @@ relay.on()
 time.sleep(5)
 relay.off()
 
+def watcher():
+    while True:
+        resp = urequests.get('http://192.168.1.134/fan_call.txt')
+        if int(resp.text):
+            relay.on()
+        else:
+            relay.off()
+        time.sleep(5)
 
-while True:
-    resp = urequests.get('http://192.168.1.134/fan_call.txt')
-    if int(resp.text):
-        relay.on()
-    else:
-        relay.off()
-    time.sleep(5)
- 
+
+_thread.start_new_thread(watcher, ())
