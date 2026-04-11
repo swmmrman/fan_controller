@@ -24,6 +24,13 @@ def temp_loop():
         print(f"\rTemp 1: {temp_1: 4.2f}f\tTemp 2: {temp_2: 4.2f}f", end="")
 
 
+def test_relay():
+    relay = machine.Pin(relay_pin, machine.Pin.OUT)
+    relay.on()
+    time.sleep(5)
+    relay.off()
+
+
 def watcher():
     while True:
         resp = urequests.get('http://192.168.1.134/fan_call.txt')
@@ -38,6 +45,7 @@ wlan = network.WLAN(network.STA_IF)
 wlan.active(True)
 wlan.connect(wifi.ssid, wifi.password)
 
+test_relay()
 
 times_nc = 0
 while wlan.status() != 3:
@@ -66,12 +74,6 @@ while time_not_set:
 tt = time.localtime(time.time() + tzoffset)
 ts = f"[{tt[0]}-{tt[1]:02}-{tt[2]} {tt[3]:02}:{tt[4]:02}:{tt[5]:02}]"
 print(f"\r\n{ts} Wifi connected: {wlan.ifconfig()[0]}")
-
-
-relay = machine.Pin(relay_pin, machine.Pin.OUT)
-relay.on()
-time.sleep(5)
-relay.off()
 
 _thread.start_new_thread(watcher, ())
 temp_loop()
