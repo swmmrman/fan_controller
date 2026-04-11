@@ -16,6 +16,23 @@ relay = machine.Pin(relay_pin, machine.Pin.OUT)
 sensor_1 = dht.DHT22(machine.Pin(0, machine.Pin.IN))
 sensor_2 = dht.DHT11(machine.Pin(1, machine.Pin.IN))
 
+
+def sync_time():
+    time_not_set = True
+    fails = 0
+
+    while time_not_set:
+        try:
+            ntptime.settime()
+        except OSError:
+            fails = fails + 1
+            print(f"\rFails: {fails}", end="")
+            time.sleep(1)
+            continue
+        else:
+            time_not_set = False
+
+
 def temp_loop():
     while True:
         time.sleep(2)
@@ -56,22 +73,7 @@ while wlan.status() != 3:
 else:
     print()
 
-
-time_not_set = True
-fails = 0
-
-while time_not_set:
-    try:
-        ntptime.settime()
-    except OSError:
-        fails = fails + 1
-        print(f"\rFails: {fails}", end="")
-        time.sleep(1)
-        continue
-    else:
-        time_not_set = False
-
-
+sync_time()
 tt = time.localtime(time.time() + tzoffset)
 ts = f"[{tt[0]}-{tt[1]:02}-{tt[2]} {tt[3]:02}:{tt[4]:02}:{tt[5]:02}]"
 print(f"\r\n{ts} Wifi connected: {wlan.ifconfig()[0]}")
