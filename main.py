@@ -36,13 +36,35 @@ def sync_time():
 
 
 def temp_loop():
+    s = socket.socket()
+    s.bind(('0.0.0.0', 80))
+    s.listen(1)
+    temp_1 = 0.0
+    temp_2 = 0.0
+    last_update = time.time()
     while True:
-        time.sleep(2)
-        sensor_1.measure()
-        temp_1 = sensor_1.temperature() * 1.8 + 32
-        sensor_2.measure()
-        temp_2 = sensor_2.temperature() * 1.8 + 32
-        print(f"\rTemp 1: {temp_1: 4.2f}f\tTemp 2: {temp_2: 4.2f}f", end="")
+        if  time.time() - last_update >= 3:
+            last_update = time.time()
+            sensor_1.measure()
+            temp_1 = sensor_1.temperature() * 1.8 + 32
+            sensor_2.measure()
+            temp_2 = sensor_2.temperature() * 1.8 + 32
+            # print(f"\rTemp 1: {temp_1: 4.2f}f\tTemp 2: {temp_2: 4.2f}f", end="")
+        try:
+            sock , addr = s.accept()
+            print(f"Connection from: {addr}")
+            request = sock.recv(1024)
+            # print(request)
+            sock.send('http/1.1 200 OK\r\nContent-type: text/html\r\n\r\n')
+            sock.send(f"Temp 1:{temp_1: 4.2f} Temp 2:{temp_2: 4.2f}")
+            sock.close()
+        except OSError:
+            sock.close()
+
+
+            
+
+
 
 
 def test_relay(relay):
