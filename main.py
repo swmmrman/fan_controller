@@ -14,7 +14,7 @@ tzoffset = -21600
 #Setup sensors/relays/wifi
 relay = machine.Pin(relay_pin, machine.Pin.OUT)
 sensor_1 = dht.DHT22(machine.Pin(0, machine.Pin.IN))
-sensor_2 = dht.DHT11(machine.Pin(1, machine.Pin.IN))
+sensor_2 = dht.DHT22(machine.Pin(1, machine.Pin.IN))
 wlan = network.WLAN(network.STA_IF)
 wlan.active(True)
 
