@@ -40,29 +40,18 @@ def sync_time():
 
 
 def temp_loop():
-    global temp_1, temp_2
     s = socket.socket()
     s.bind(('0.0.0.0', 80))
     s.listen(1)
-    while True:
-        try:
-            sock , addr = s.accept()
-            print(f"Connection from: {addr}")
-            request = sock.recv(1024)
-            sock.send('http/1.1 200 OK\r\nContent-type: text/html\r\n\r\n')
-            sock.send(f"Temp 1:{temp_1: 4.2f} Temp 2:{temp_2: 4.2f}")
-            sock.close()
-        except OSError:
-            print("No connect")
-            sock.close()
+    for i in range(0,10000000000):
+        diags.re(s,f"Count: {i:,}")
 
-def temp_update(isr):
+def temp_update():
     global sensor_1, sensor_2, temp_1, temp_2
     sensor_1.measure()
     sensor_2.measure()
     time.sleep(1)
     temp_1 = sensor_1.temperature() * 1.8 + 32
-    sensor_2.measure()
     temp_2 = sensor_2.temperature() * 1.8 + 32 
 
 def test_relay(relay):

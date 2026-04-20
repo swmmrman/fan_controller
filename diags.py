@@ -1,5 +1,9 @@
-def re(s,mesg):
-    global temp_1, temp_2
+import gc
+import micropython
+import socket
+import time
+
+def re(s,mesg, temps):
     sock, addr = s.accept()
     req = sock.recv(2048)
     header = "http/1.1 200 OK\r\nContent-type: text/html\r\n\r\n"
