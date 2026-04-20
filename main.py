@@ -94,5 +94,7 @@ tt = time.localtime(time.time() + tzoffset)
 ts = f"[{tt[0]}-{tt[1]:02}-{tt[2]} {tt[3]:02}:{tt[4]:02}:{tt[5]:02}]"
 print(f"\r\n{ts} Wifi connected: {wlan.ifconfig()[0]}")
 
-_thread.start_new_thread(watcher, ())
-temp_loop()
+#_thread.start_new_thread(watcher, ())
+tmr = machine.Timer()
+tmr.init(freq=1, callback=temp_update)
+#temp_loop()
