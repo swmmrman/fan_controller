@@ -59,6 +59,8 @@ def temp_loop():
 def temp_update(isr):
     global sensor_1, sensor_2, temp_1, temp_2
     sensor_1.measure()
+    sensor_2.measure()
+    time.sleep(1)
     temp_1 = sensor_1.temperature() * 1.8 + 32
     sensor_2.measure()
     temp_2 = sensor_2.temperature() * 1.8 + 32 
