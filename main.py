@@ -6,10 +6,14 @@ import network
 import urequests
 import socket
 import _thread
+import gc
+import micropython
 
 ## Setup global variables
 relay_pin = 14
 tzoffset = -21600
+temp_1 = 0.0
+temp_2 = 0.0
 
 #Setup sensors/relays/wifi
 relay = machine.Pin(relay_pin, machine.Pin.OUT)
@@ -36,6 +40,7 @@ def sync_time():
 
 
 def temp_loop():
+    global temp_1, temp_2
     s = socket.socket()
     s.bind(('0.0.0.0', 80))
     s.listen(1)
@@ -67,7 +72,7 @@ def test_relay(relay):
 def watcher():
     while True:
         resp = urequests.get('http://192.168.1.134/fan_call.txt')
-        if int(resp.text):
+        if resp.text == "on":
             relay.on()
         else:
             relay.off()
