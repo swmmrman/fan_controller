@@ -8,13 +8,26 @@ import socket
 import _thread
 import gc
 import micropython
+import diags
 
 ## Setup global variables
 relay_pin = 14
 tzoffset = -21600
-temp_1 = 0.0
-temp_2 = 0.0
 
+class readings:
+    def __init__(self):
+        self.temps = {
+            '1':0.0,
+            '2':0.0
+        }
+    
+    def update(self, temp, id):
+        self.temps[id] = temp
+    
+    def get(self, id):
+        return self.temps[id]
+
+temps = readings()
 #Setup sensors/relays/wifi
 relay = machine.Pin(relay_pin, machine.Pin.OUT)
 sensor_1 = dht.DHT22(machine.Pin(0, machine.Pin.IN))
@@ -44,15 +57,14 @@ def temp_loop():
     s.bind(('0.0.0.0', 80))
     s.listen(1)
     for i in range(0,10000000000):
-        diags.re(s,f"Count: {i:,}")
+        diags.re(s,f"Count: {i:,}", temps)
 
 def temp_update():
-    global sensor_1, sensor_2, temp_1, temp_2
     sensor_1.measure()
     sensor_2.measure()
     time.sleep(1)
-    temp_1 = sensor_1.temperature() * 1.8 + 32
-    temp_2 = sensor_2.temperature() * 1.8 + 32 
+    temps.update( sensor_1.temperature() * 1.8 + 32, '1')
+    temps.update( sensor_2.temperature() * 1.8 + 32, '2')
 
 def test_relay(relay):
     relay.on()
@@ -91,6 +103,8 @@ ts = f"[{tt[0]}-{tt[1]:02}-{tt[2]} {tt[3]:02}:{tt[4]:02}:{tt[5]:02}]"
 print(f"\r\n{ts} Wifi connected: {wlan.ifconfig()[0]}")
 
 #_thread.start_new_thread(watcher, ())
-tmr = machine.Timer()
-tmr.init(freq=1, callback=temp_update)
-#temp_loop()
+#tmr = machine.Timer()
+# temp_update(())
+# tmr.init(freq=1, callback=temp_update)
+_thread.start_new_thread(temp_update, ())
+temp_loop()
