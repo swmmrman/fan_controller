@@ -27,7 +27,19 @@ class readings:
     def get(self, id):
         return self.temps[id]
 
+
+class counter:
+    def __init__(self):
+        self.count = 0
+
+    def get(self):
+        cur = self.count
+        self.count += 1
+        return(cur)
+        
+
 temps = readings()
+count = counter()
 #Setup sensors/relays/wifi
 relay = machine.Pin(relay_pin, machine.Pin.OUT)
 sensor_1 = dht.DHT22(machine.Pin(0, machine.Pin.IN))
@@ -56,8 +68,8 @@ def temp_loop():
     s = socket.socket()
     s.bind(('0.0.0.0', 80))
     s.listen(1)
-    for i in range(0,10000000000):
-        diags.re(s,f"Count: {i:,}", temps)
+    while True:
+        diags.re(s, temps, count)
 
 def temp_update():
     sensor_1.measure()
