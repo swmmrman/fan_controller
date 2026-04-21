@@ -27,19 +27,27 @@ class temp:
         if self.max < temp:
             self.max = temp
 
+    def get_cur(self):
+        return self.cur
+
+    def get_max(self):
+        return self.max
+    
+    def get_min(self)
+        return self.min
         
 class readings:
     def __init__(self):
         self.temps = {
-            '1':0.0,
-            '2':0.0
+            '1': temp(),
+            '2': temp()
         }
     
     def update(self, temp, id):
-        self.temps[id] = temp
+        self.temps[id].update(temp)
     
     def get(self, id):
-        return self.temps[id]
+        return self.temps[id].get_cur()
 
 
 class counter:
