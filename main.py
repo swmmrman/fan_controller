@@ -14,6 +14,20 @@ import diags
 relay_pin = 14
 tzoffset = -21600
 
+class temp:
+    def __init__(self):
+        self.min = 255
+        self.max = -200
+        self.cur = -200
+
+    def update(self, temp):
+        self.cur = temp
+        if self.min > temp:
+            self.min = temp
+        if self.max < temp:
+            self.max = temp
+
+        
 class readings:
     def __init__(self):
         self.temps = {
