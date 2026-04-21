@@ -11,6 +11,7 @@ import micropython
 import diags
 
 ## Setup global variables
+reedpin = 15
 relay_pin = 14
 tzoffset = -21600
 
@@ -70,9 +71,10 @@ class counter:
 temps = readings()
 count = counter()
 #Setup sensors/relays/wifi
-relay = machine.Pin(relay_pin, machine.Pin.OUT)
-sensor_1 = dht.DHT22(machine.Pin(0, machine.Pin.IN))
-sensor_2 = dht.DHT22(machine.Pin(1, machine.Pin.IN))
+relay = machine.Pin(relay_pin, mode=machine.Pin.OUT)
+reedswitch = machine.Pin(reedpin, mode=machine.Pin.IN, pull=machine.Pin.PULL_UP)
+sensor_1 = dht.DHT22(machine.Pin(0, mode=machine.Pin.IN))
+sensor_2 = dht.DHT22(machine.Pin(1, mode=machine.Pin.IN))
 wlan = network.WLAN(network.STA_IF)
 wlan.active(True)
 
@@ -112,14 +114,16 @@ def test_relay(relay):
     relay.off()
 
 
-def watcher():
-    while True:
+def watcher(isr):
+    #Grounded(0) if hatch closed
+    if reedswitch.value() == 0:
         resp = urequests.get('http://192.168.1.134/fan_call.txt')
         if resp.text == "on":
             relay.on()
         else:
             relay.off()
-        time.sleep(5)
+    else:
+        relay.off()
 
 
 def connect_wifi(wlan):
@@ -146,3 +150,5 @@ _thread.start_new_thread(temp_loop, ())
 
 tmr = machine.Timer()
 tmr.init(mode=tmr.PERIODIC, period=1010, callback=temp_update)
+tmr2 = machine.Timer()
+tmr2.init(mode=tmr2.PERIODIC, period=500, callback=watcher)
