@@ -71,10 +71,9 @@ def temp_loop():
     while True:
         diags.re(s, temps, count)
 
-def temp_update():
+def temp_update(isr):
     sensor_1.measure()
     sensor_2.measure()
-    time.sleep(1)
     temps.update( sensor_1.temperature() * 1.8 + 32, '1')
     temps.update( sensor_2.temperature() * 1.8 + 32, '2')
 
@@ -114,9 +113,6 @@ tt = time.localtime(time.time() + tzoffset)
 ts = f"[{tt[0]}-{tt[1]:02}-{tt[2]} {tt[3]:02}:{tt[4]:02}:{tt[5]:02}]"
 print(f"\r\n{ts} Wifi connected: {wlan.ifconfig()[0]}")
 
-#_thread.start_new_thread(watcher, ())
-#tmr = machine.Timer()
-# temp_update(())
-# tmr.init(freq=1, callback=temp_update)
-_thread.start_new_thread(temp_update, ())
+tmr = machine.Timer()
+tmr.init(freq=1, callback=temp_update)
 temp_loop()
