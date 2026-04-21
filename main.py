@@ -24,6 +24,7 @@ class temp:
         self.cur = temp
         if self.min > temp:
             self.min = temp
+
         if self.max < temp:
             self.max = temp
 
@@ -33,7 +34,7 @@ class temp:
     def get_max(self):
         return self.max
     
-    def get_min(self)
+    def get_min(self):
         return self.min
         
 class readings:
@@ -48,6 +49,12 @@ class readings:
     
     def get(self, id):
         return self.temps[id].get_cur()
+    
+    def get_min(self, id):
+        return self.temps[id].get_min()
+    
+    def get_max(self, id):
+        return self.temps[id].get_max()
 
 
 class counter:
