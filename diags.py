@@ -1,5 +1,6 @@
 import gc
 import micropython
+import machine
 import socket
 import time
 
@@ -13,6 +14,8 @@ def re(s, temps, count):
         sock.send("Not Found\r\n\r\n")
         sock.close()
         return
+    elif path == "/reset":
+        machine.reset()
     else:
         header = "HTTP/1.1 200 OK\r\nContent-type: text/plain\r\n\r\n"
         free_mem = gc.mem_free()
