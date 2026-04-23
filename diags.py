@@ -33,3 +33,9 @@ def re(s, temps, count, rs):
         sock.send(f"Sensor 2:{temps.get('2'): 5.2f}f\t Max: {temps.get_max('2'): 5.2f}f\tMin: {temps.get_min('2'): 5.2f}")
         sock.send("")
         sock.close()
+    del addr
+    del hatch
+    del path
+    del req
+    del request
+    del sock
