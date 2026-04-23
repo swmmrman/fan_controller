@@ -1,0 +1,1 @@
+This project is being abandoned,  There multithreading memory leak is causing issues.  Plus the tools for working with micropython, are taking more of my time then the actual code.  The related projects are being abandonded as well.  Feel free to use any code here.  Learn, laugh, make fun of.  The repos will be left up so any can learn from them.  
