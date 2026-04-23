@@ -19,20 +19,26 @@ def re(s, temps, count, rs):
         return
     elif path == "/reset":
         sock.send("HTTP/1.1 200 OK\r\nContent-type: text/plain\r\n\r\n")
-        sock.send("Restarting, Please wait")
+        sock.send("Restarting, Please wait ")
+        sock.send("\r\n")
         sock.close()
+        time.sleep(1)
         machine.reset()
     else:
         header = "HTTP/1.1 200 OK\r\nContent-type: text/plain\r\n\r\n"
         free_mem = gc.mem_free()
         lt = time.localtime(time.time()-21600)
         t = "{: 2}:{:02}:{:02} {}-{:02}-{:02}".format(lt[3],lt[4],lt[5],lt[0],lt[1],lt[2])
-        sock.send(f"{header}Your IP:{addr[0]}\r\nFree Memory: {free_mem:,}\r\nCurrent Time:{t}\r\n")
+        sock.send(f"{header}2 Your IP:{addr[0]}\r\nFree Memory: {free_mem:,}\r\nCurrent Time:{t}\r\n")
         sock.send(f"Hatch Open: {hatch}\r\nCount: {count.get():,}\r\nCurrent Temps\r\n")
         sock.send(f"Sensor 1:{temps.get('1'): 5.2f}f\t Max: {temps.get_max('1'): 5.2f}f\tMin: {temps.get_min('1'): 5.2f}\r\n")
         sock.send(f"Sensor 2:{temps.get('2'): 5.2f}f\t Max: {temps.get_max('2'): 5.2f}f\tMin: {temps.get_min('2'): 5.2f}")
         sock.send("")
         sock.close()
+        del t
+        del lt
+        del header
+        del free_mem
     del addr
     del hatch
     del path
