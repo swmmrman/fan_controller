@@ -100,7 +100,7 @@ def temp_loop():
     s.bind(('0.0.0.0', 80))
     s.listen(1)
     while True:
-        diags.re(s, temps, count)
+        diags.re(s, temps, count, reedswitch)
 
 def temp_update(isr):
     sensor_1.measure()
