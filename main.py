@@ -73,8 +73,8 @@ count = counter()
 #Setup sensors/relays/wifi
 relay = machine.Pin(relay_pin, mode=machine.Pin.OUT)
 reedswitch = machine.Pin(reedpin, mode=machine.Pin.IN, pull=machine.Pin.PULL_UP)
-sensor_1 = dht.DHT22(machine.Pin(0, mode=machine.Pin.IN))
-sensor_2 = dht.DHT22(machine.Pin(1, mode=machine.Pin.IN))
+sensor_1 = dht.DHT22(machine.Pin(2, mode=machine.Pin.IN))
+sensor_2 = dht.DHT22(machine.Pin(3, mode=machine.Pin.IN))
 wlan = network.WLAN(network.STA_IF)
 wlan.active(True)
 
